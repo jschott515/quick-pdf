@@ -1,6 +1,11 @@
+import pathlib
 import tkinter
 import tkinter.ttk
-from tkinter import filedialog
+import tkinter.filedialog
+import typing
+
+import pymupdf
+import qpdf
 
 from ._core import QpdfTool
 
@@ -32,6 +37,11 @@ class PdfAppend(QpdfTool):
         tkinter.ttk.Button(btn_frame, text="Move Up", command=lambda: self._move_item(-1)).pack(side="left", padx=2)
         tkinter.ttk.Button(btn_frame, text="Move Down", command=lambda: self._move_item(1)).pack(side="left", padx=2)
 
+    def get_pdf(self) -> pymupdf.Document:
+        row_ids = self._tree.get_children()
+        files: typing.Sequence[pathlib.Path] = [self._tree.item(iid, "values")[0] for iid in row_ids]
+        return qpdf.pdf_append(files)
+
     def _on_hover(self, event: tkinter.Event[tkinter.ttk.Treeview]) -> None:
         item_id = self._tree.identify_row(event.y)
         if item_id:
@@ -60,10 +70,10 @@ class PdfAppend(QpdfTool):
             self._tooltip_win = None
 
     def _add_files(self) -> None:
-        files = filedialog.askopenfilenames(filetypes=[("PDF files", "*.pdf")])
+        files = tkinter.filedialog.askopenfilenames(filetypes=[("PDF files", "*.pdf")])
         for f in files:
             name = f.split("/")[-1]
-            self._tree.insert("", "end", text=name, values=(f,))
+            self._tree.insert("", "end", text=name, values=(pathlib.Path(f),))
 
     def _delete_selected(self) -> None:
         for item in self._tree.selection():

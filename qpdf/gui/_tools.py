@@ -1,4 +1,3 @@
-import dataclasses
 import tkinter
 import tkinter.ttk
 import typing
@@ -23,7 +22,7 @@ class QpdfTools(tkinter.ttk.Frame):
         container.grid_columnconfigure(0, weight=1)
 
         self._notebook = tkinter.ttk.Notebook(container)
-        self._tabs = {QpdfToolType.PDF_APPEND: PdfAppend(self._notebook)}
+        self._tabs: typing.MutableMapping[QpdfToolType, QpdfTool] = {QpdfToolType.PDF_APPEND: PdfAppend(self._notebook)}
         for tool, tab in self._tabs.items():
             self._notebook.add(tab, text=tool.value)
 
