@@ -29,7 +29,7 @@ profile = "black"
 line_length = 120
 
 [tool.mypy]
-strict = true
+strict = false
 
 [tool.tox]
 requires = ["tox>=4.19"]

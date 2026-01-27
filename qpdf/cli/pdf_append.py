@@ -16,7 +16,8 @@ DEFAULT_OUT = pathlib.Path("qpdf_merged.pdf")
 def main() -> None:
     cfg = parse_args()
     try:
-        qpdf.pdf_append(cfg.FILES, cfg.out, cfg.force)
+        result = qpdf.pdf_append(cfg.FILES)
+        qpdf.pdf_save(result, cfg.out, cfg.force)
     except qpdf.QpdfException as e:
         print(e)
         sys.exit(1)

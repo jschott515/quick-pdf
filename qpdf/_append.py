@@ -3,10 +3,10 @@ import typing
 
 import pypdf
 
-from ._exception import QpdfFileExistsError, QpdfFileNotFoundError
+from ._exception import QpdfFileNotFoundError
 
 
-def pdf_append(files: typing.Sequence[pathlib.Path], out: pathlib.Path, force: bool = False) -> None:
+def pdf_append(files: typing.Sequence[pathlib.Path]) -> pypdf.PdfWriter:
     writer = pypdf.PdfWriter()
 
     missing_files = [file for file in files if not file.exists()]
@@ -20,8 +20,4 @@ def pdf_append(files: typing.Sequence[pathlib.Path], out: pathlib.Path, force: b
         for page in reader.pages:
             writer.add_page(page)
 
-    if out.exists() and not force:
-        raise QpdfFileExistsError("Output file already exists and force is not set!")
-
-    with open(out, "wb") as f:
-        writer.write(f)
+    return writer
