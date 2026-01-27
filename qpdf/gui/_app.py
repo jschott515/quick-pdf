@@ -26,9 +26,3 @@ class QuickPdf(tkinter.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self._home.tkraise()
-
-    def get_home(self) -> QpdfHome:
-        return self._home
-
-    def get_tools(self) -> QpdfTools:
-        return self._tools
