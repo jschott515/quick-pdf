@@ -19,7 +19,7 @@ dev = [
 ]
 
 [project.scripts]
-pdf-append = "qpdf.pdf_append:main"
+pdf-append = "qpdf.cli.pdf_append:main"
 
 [tool.black]
 line-length = 120

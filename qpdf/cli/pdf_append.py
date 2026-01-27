@@ -8,34 +8,18 @@ import pathlib
 import sys
 import typing
 
-import pypdf
-
 import qpdf
 
 DEFAULT_OUT = pathlib.Path("qpdf_merged.pdf")
 
 
-def main() -> int:
+def main() -> None:
     cfg = parse_args()
-    writer = pypdf.PdfWriter()
-
-    missing_files = [file for file in cfg.FILES if not file.exists()]
-    if missing_files:
-        print(f"Could not find files: `{'`, `'.join([file.as_posix() for file in missing_files])}`")
-        return 1
-
-    for file in cfg.FILES:
-        reader = pypdf.PdfReader(file)
-        for page in reader.pages:
-            writer.add_page(page)
-
-    if cfg.out.exists() and not cfg.force:
-        print("Output file already exists and force is not set!")
-        return 1
-
-    with open(cfg.out, "wb") as f:
-        writer.write(f)
-    return 0
+    try:
+        qpdf.pdf_append(cfg.FILES, cfg.out, cfg.force)
+    except qpdf.QpdfException as e:
+        print(e)
+        sys.exit(1)
 
 
 class LocalArgs(typing.Protocol):
@@ -61,4 +45,4 @@ def parse_args() -> LocalArgs:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
