@@ -15,7 +15,7 @@ def pdf_append(files: typing.Sequence[pathlib.Path]) -> pymupdf.Document:
             f"Could not find files: `{'`, `'.join([file.as_posix() for file in missing_files])}`"
         )
 
-    for file_path in files:
-        pdf.insert_file(file_path)
+    for file in files:
+        pdf.insert_pdf(pymupdf.open(file.as_posix()))
 
     return pdf

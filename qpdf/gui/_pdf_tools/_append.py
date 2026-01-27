@@ -1,10 +1,11 @@
 import pathlib
 import tkinter
-import tkinter.ttk
 import tkinter.filedialog
+import tkinter.ttk
 import typing
 
 import pymupdf
+
 import qpdf
 
 from ._core import QpdfTool
@@ -26,7 +27,8 @@ class PdfAppend(QpdfTool):
         # Hide the technical 'path' column from view
         self._tree.column("path", width=0, stretch=False)
 
-        self._tooltip_win = None
+        self._tooltip_win: tkinter.Toplevel | None = None
+        self._tooltip_label = tkinter.ttk.Label(self._tooltip_win, relief="solid", borderwidth=1, background="#ffffca")
         self._tree.bind("<Motion>", self._on_hover)
         self._tree.bind("<Leave>", lambda e: self._hide_tooltip())
 
@@ -39,7 +41,7 @@ class PdfAppend(QpdfTool):
 
     def get_pdf(self) -> pymupdf.Document:
         row_ids = self._tree.get_children()
-        files: typing.Sequence[pathlib.Path] = [self._tree.item(iid, "values")[0] for iid in row_ids]
+        files: typing.Sequence[pathlib.Path] = [pathlib.Path(self._tree.item(iid, "values")[0]) for iid in row_ids]
         return qpdf.pdf_append(files)
 
     def _on_hover(self, event: tkinter.Event[tkinter.ttk.Treeview]) -> None:
@@ -59,9 +61,7 @@ class PdfAppend(QpdfTool):
         self._tooltip_win = tkinter.Toplevel(self)
         self._tooltip_win.wm_overrideredirect(True)
         self._tooltip_win.geometry(f"+{x}+{y}")
-        self._tooltip_label = tkinter.ttk.Label(
-            self._tooltip_win, text=text, relief="solid", borderwidth=1, background="#ffffca"
-        )
+        self._tooltip_label.config(text=text)
         self._tooltip_label.pack()
 
     def _hide_tooltip(self) -> None:
@@ -73,7 +73,7 @@ class PdfAppend(QpdfTool):
         files = tkinter.filedialog.askopenfilenames(filetypes=[("PDF files", "*.pdf")])
         for f in files:
             name = f.split("/")[-1]
-            self._tree.insert("", "end", text=name, values=(pathlib.Path(f),))
+            self._tree.insert("", "end", text=name, values=(f,))
 
     def _delete_selected(self) -> None:
         for item in self._tree.selection():
