@@ -1,5 +1,5 @@
 # Quick PDF
-Command Line PDF Tools!
+Simple PDF Utilities
 
 ## Install
 **Requires python 3.14.**
@@ -25,6 +25,7 @@ Launch from the command line (assumes that quick-pdf was [installed with pip](/R
 ```bash
 QuickPdf
 ```
+
 *OR*
 
 Create a standalone executable with pyinstaller:
@@ -32,6 +33,10 @@ Create a standalone executable with pyinstaller:
 cd quick-pdf
 pyinstaller --onefile --name QuickPdf --noconsole --copy-metadata quick-pdf --add-data "qpdf/gui/assets;qpdf/gui/assets" --icon .\qpdf\gui\assets\QuickPdf.ico .\qpdf\gui\main.py
 ```
+
+*OR*
+
+Download `QuickPdf.exe` from the [latest release](https://github.com/jschott515/quick-pdf/releases/latest)!
 
 ### Home
 ![image](/docs/images/QuickPdfHome.png)
@@ -44,7 +49,21 @@ pyinstaller --onefile --name QuickPdf --noconsole --copy-metadata quick-pdf --ad
 The following assumes that quick-pdf was [installed with pip](/README.md#install).
 
 ### pdf-append
-Combine multiple pdf files.
+```bash
+> pdf-append --help
 ```
-pdf-append --help
+```
+usage: pdf-append
+       [-h] [-o OUT] [-f] FILES [FILES ...]
+
+Quick PDF pdf-append tool.
+Combine multiple PDF files into one!
+
+positional arguments:
+  FILES          PDF Files to append.
+
+options:
+  -h, --help     show this help message and exit
+  -o, --out OUT  Output file path.
+  -f, --force    Overwrite output file?
 ```
