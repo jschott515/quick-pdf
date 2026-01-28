@@ -39,7 +39,7 @@ class PdfAppend(QpdfTool):
         tkinter.ttk.Button(btn_frame, text="Move Up", command=lambda: self._move_item(-1)).pack(side="left", padx=2)
         tkinter.ttk.Button(btn_frame, text="Move Down", command=lambda: self._move_item(1)).pack(side="left", padx=2)
 
-    def get_pdf(self) -> pymupdf.Document:
+    def _get_pdf(self) -> pymupdf.Document:
         row_ids = self._tree.get_children()
         files: typing.Sequence[pathlib.Path] = [pathlib.Path(self._tree.item(iid, "values")[0]) for iid in row_ids]
         return qpdf.pdf_append(files)
@@ -88,3 +88,7 @@ class PdfAppend(QpdfTool):
         for i in (leaves if direction == -1 else reversed(leaves)):
             idx = self._tree.index(i)
             self._tree.move(i, self._tree.parent(i), idx + direction)
+
+    def reset(self) -> None:
+        for item in self._tree.get_children():
+            self._tree.delete(item)

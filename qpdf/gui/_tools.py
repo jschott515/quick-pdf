@@ -1,10 +1,15 @@
+import pathlib
 import tkinter
+import tkinter.filedialog
+import tkinter.messagebox
 import tkinter.ttk
 import typing
 
 import PIL.Image
 import PIL.ImageTk
 import pymupdf
+
+import qpdf
 
 from ._pdf_tools import PdfAppend, QpdfTool
 from .core import QpdfToolsMetadata, QpdfToolType
@@ -18,7 +23,7 @@ class QpdfTools(tkinter.ttk.Frame):
 
         self._sidebar = tkinter.ttk.Frame(self)
         self._sidebar.pack(side="right", fill="y", padx=5, pady=5)
-        tkinter.ttk.Button(self._sidebar, text="Home", command=home_action).pack(fill="x", pady=2)
+        tkinter.ttk.Button(self._sidebar, width=15, text="Home", command=home_action).pack(fill="x", pady=2)
 
         self._zoom_frame = tkinter.ttk.LabelFrame(self._sidebar, text="Zoom")
         tkinter.ttk.Button(self._zoom_frame, text="+", width=3, command=lambda: self._change_zoom(0.1)).pack(
@@ -28,7 +33,9 @@ class QpdfTools(tkinter.ttk.Frame):
             side="left", padx=2
         )
 
-        self._view_select = tkinter.ttk.Button(self._sidebar)
+        tkinter.ttk.Button(self._sidebar, width=15, text="Save", command=self.save_file).pack(side="bottom")
+
+        self._view_select = tkinter.ttk.Button(self._sidebar, width=15)
         self._view_select.pack(side="bottom", fill="x", pady=2)
         self._preview_enable = False
 
@@ -60,6 +67,30 @@ class QpdfTools(tkinter.ttk.Frame):
 
         self._notebook.grid(row=0, column=0, sticky="nsew")
         self._preview.grid(row=0, column=0, sticky="nsew")
+        self.hide_preview()
+
+    def save_file(self) -> None:
+        pdf = self._tools[self._active_tool].get_pdf()
+        if not pdf:
+            return
+
+        if len(pdf) == 0:
+            tkinter.messagebox.showwarning("Warning", "Nothing to save!")
+            return
+
+        path_str = tkinter.filedialog.asksaveasfilename(
+            defaultextension=".pdf",
+            filetypes=[("PDF files", "*.pdf")],
+        )
+        if not path_str:
+            return
+
+        path = pathlib.Path(path_str)
+        qpdf.pdf_save(pdf, path, force=True)
+        self.reset()
+
+    def reset(self) -> None:
+        self._tools[self._active_tool].reset()
         self.hide_preview()
 
     def _change_zoom(self, delta: float) -> None:
@@ -134,6 +165,7 @@ class QpdfTools(tkinter.ttk.Frame):
         self._view_select.configure(text="Hide Preview", command=self.hide_preview)
         self._zoom_frame.pack(fill="x", pady=10, before=self._view_select)
         self._preview.tkraise()
+        self.after(10, self.render_pdf)
 
     def hide_preview(self) -> None:
         self._preview_enable = False

@@ -3,7 +3,7 @@ import typing
 
 import pymupdf
 
-from ._exception import QpdfFileNotFoundError
+from ._exception import QpdfFileDataError, QpdfFileNotFoundError
 
 
 def pdf_append(files: typing.Sequence[pathlib.Path]) -> pymupdf.Document:
@@ -16,6 +16,9 @@ def pdf_append(files: typing.Sequence[pathlib.Path]) -> pymupdf.Document:
         )
 
     for file in files:
-        pdf.insert_pdf(pymupdf.open(file.as_posix()))
+        try:
+            pdf.insert_pdf(pymupdf.open(file.as_posix()))
+        except pymupdf.FileDataError:  # type: ignore[attr-defined]
+            raise QpdfFileDataError(f"Failed to read file `{file.as_posix()}`")
 
     return pdf

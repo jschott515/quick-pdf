@@ -1,3 +1,6 @@
+import pymupdf
+
+
 class QpdfException(Exception):
     """Base class for all qpdf-related errors."""
 
@@ -8,3 +11,7 @@ class QpdfFileNotFoundError(QpdfException, FileNotFoundError):
 
 class QpdfFileExistsError(QpdfException, FileExistsError):
     """Raised when qpdf would overwrite an existing file."""
+
+
+class QpdfFileDataError(QpdfException, pymupdf.FileDataError):  # type: ignore[name-defined]
+    """Raised when qpdf cannot read a file."""
