@@ -28,7 +28,7 @@ class PdfAppend(QpdfTool):
         self._tree.column("path", width=0, stretch=False)
 
         self._tooltip_win: tkinter.Toplevel | None = None
-        self._tooltip_label = tkinter.ttk.Label(self._tooltip_win, relief="solid", borderwidth=1, background="#ffffca")
+        self._tooltip_label: tkinter.ttk.Label | None = None
         self._tree.bind("<Motion>", self._on_hover)
         self._tree.bind("<Leave>", lambda e: self._hide_tooltip())
 
@@ -54,6 +54,7 @@ class PdfAppend(QpdfTool):
 
     def _show_tooltip(self, x: int, y: int, text: str) -> None:
         if self._tooltip_win:
+            assert self._tooltip_label is not None
             self._tooltip_label.config(text=text)
             self._tooltip_win.geometry(f"+{x}+{y}")
             return
@@ -61,6 +62,7 @@ class PdfAppend(QpdfTool):
         self._tooltip_win = tkinter.Toplevel(self)
         self._tooltip_win.wm_overrideredirect(True)
         self._tooltip_win.geometry(f"+{x}+{y}")
+        self._tooltip_label = tkinter.ttk.Label(self._tooltip_win, relief="solid", borderwidth=1, background="#ffffca")
         self._tooltip_label.config(text=text)
         self._tooltip_label.pack()
 
