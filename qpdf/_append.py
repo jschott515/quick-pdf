@@ -1,13 +1,13 @@
 import pathlib
 import typing
 
-import pypdf
+import pymupdf
 
-from ._exception import QpdfFileExistsError, QpdfFileNotFoundError
+from ._exception import QpdfFileDataError, QpdfFileNotFoundError
 
 
-def pdf_append(files: typing.Sequence[pathlib.Path], out: pathlib.Path, force: bool = False) -> None:
-    writer = pypdf.PdfWriter()
+def pdf_append(files: typing.Sequence[pathlib.Path]) -> pymupdf.Document:
+    pdf = pymupdf.open()
 
     missing_files = [file for file in files if not file.exists()]
     if missing_files:
@@ -16,12 +16,9 @@ def pdf_append(files: typing.Sequence[pathlib.Path], out: pathlib.Path, force: b
         )
 
     for file in files:
-        reader = pypdf.PdfReader(file)
-        for page in reader.pages:
-            writer.add_page(page)
+        try:
+            pdf.insert_pdf(pymupdf.open(file.as_posix()))
+        except pymupdf.FileDataError:  # type: ignore[attr-defined]
+            raise QpdfFileDataError(f"Failed to read file `{file.as_posix()}`")
 
-    if out.exists() and not force:
-        raise QpdfFileExistsError("Output file already exists and force is not set!")
-
-    with open(out, "wb") as f:
-        writer.write(f)
+    return pdf

@@ -2,7 +2,7 @@
 Command Line PDF Tools!
 
 ## Install
-Requires python 3.9 - install with pip:
+Requires python 3.14 - install with pip:
 ```
 pip install git+https://github.com/jschott515/quick-pdf.git
 ```
