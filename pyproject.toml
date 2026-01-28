@@ -6,18 +6,25 @@ build-backend = "setuptools.build_meta"
 name = "quick-pdf"
 version = "0.1.0"
 description = "Quick PDF tools"
+authors = [
+  {name = "jschott515", email = "jschott515@gmail.com"},
+]
 dependencies = [
     "PyMuPDF>=1.26",
     "Pillow>=12.1",
 ]
+
+[project.urls]
+Homepage = "https://github.com/jschott515/quick-pdf"
 
 [project.optional-dependencies]
 dev = [
     "black>=25.12",
     "isort>=7.0",
     "mypy>=1.19",
-    "tox>=4.19",
+    "pyinstaller>=6.18",
     "pymupdf-stubs>=1.26",
+    "tox>=4.19",
 ]
 
 [project.scripts]
@@ -25,6 +32,9 @@ pdf-append = "qpdf.cli.pdf_append:main"
 
 [project.gui-scripts]
 QuickPdf = "qpdf.gui.main:main"
+
+[tool.setuptools.package-data]
+"qpdf.gui.assets" = ["*.ico"]
 
 [tool.black]
 line-length = 120

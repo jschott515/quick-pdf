@@ -1,6 +1,9 @@
+import ctypes
 import tkinter
 import tkinter.ttk
 import typing
+
+from qpdf._info import AUTHOR, ICON, VERSION_MAJOR, VERSION_MINOR, VERSION_REV
 
 from ._home import QpdfHome
 from ._tools import QpdfTools
@@ -9,9 +12,13 @@ from ._tools import QpdfTools
 class QuickPdf(tkinter.Tk):
     def __init__(self, window_size: str = "640x480") -> None:
         super().__init__()
+        app_id = f"{AUTHOR}.QuickPdf.v{VERSION_MAJOR}_{VERSION_MINOR}_{VERSION_REV}"
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
 
         self.title("Quick PDF")
         self.geometry(window_size)
+
+        self.iconbitmap(ICON)
 
         container = tkinter.ttk.Frame(self)
         container.pack(fill="both", expand=True)

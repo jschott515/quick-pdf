@@ -3,6 +3,8 @@ import tkinter.ttk
 import typing
 import webbrowser
 
+from qpdf._info import AUTHOR, HOMEPAGE, VERSION
+
 from .core import QpdfToolsMetadata
 
 ASCII_LOGO = r"""
@@ -128,11 +130,14 @@ class QpdfHome(tkinter.ttk.Frame):
             )
             tools_area.columnconfigure(i, weight=1)
 
+        def open_github() -> None:
+            webbrowser.open(HOMEPAGE)
+
         github_widget = QpdfWidget(
             tools_area,
             title="Contribute",
             description="More tools comming soon...",
-            on_click=lambda: webbrowser.open("https://github.com/jschott515/quick-pdf"),
+            on_click=open_github,
         )
         github_widget.grid(row=0, column=len(supported_tools), sticky="nsew", padx=15, pady=15)
         tools_area.columnconfigure(len(supported_tools), weight=1)
@@ -142,7 +147,7 @@ class QpdfHome(tkinter.ttk.Frame):
 
         tkinter.ttk.Label(
             footer,
-            text="v0.1.0 - @jschott515",
+            text=f"{VERSION} - @{AUTHOR}",
             foreground="#777",
         ).pack(anchor="center")
 
