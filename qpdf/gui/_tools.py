@@ -71,7 +71,7 @@ class QpdfTools(tkinter.ttk.Frame):
 
     def save_file(self) -> None:
         pdf = self._tools[self._active_tool].get_pdf()
-        if not pdf:
+        if pdf is None:
             return
 
         if len(pdf) == 0:
